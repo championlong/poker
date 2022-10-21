@@ -8,6 +8,7 @@ import (
 	"poker/utils"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -17,17 +18,27 @@ const (
 var roundNum int
 
 func main() {
-	ctx := context.Background()
-	apply, err := request.ApplyRouter(ctx)
+	for {
+		applyReport()
+
+		roundNum = getRoundNum()
+		getRoundInfo()
+
+		fmt.Println(roundNum)
+		time.Sleep(28*time.Second)
+	}
+}
+
+func applyReport(){
+	apply, err := request.ApplyRouter(context.Background())
 	if err != nil {
 		fmt.Println("ApplyRouter", err)
 	}
-	if apply == "true" {
-		roundNum = getRoundNum()
-		getRoundInfo()
+	if apply != "true" && roundNum != 0{
+		applyReport()
+		return
 	}
-
-	fmt.Println(roundNum)
+	return
 }
 
 func getRoundNum() int {
@@ -57,6 +68,7 @@ func getRoundInfo() {
 
 	if _, ok := roundInfo.PerCardInfo[team]; !ok {
 		getRoundInfo()
+		return
 	}
 	proks := roundInfo.PerCardInfo[team]
 	prokStr := getRandPork(proks)

@@ -37,7 +37,7 @@ func ApplyRouter(ctx context.Context) (string, error) {
 func CardInfo(ctx context.Context) (model.CardInfoResp, error) {
 	cardInfoResp := model.CardInfoResp{}
 	url := urlDomain + "/card/info?userToken=" + UserToken + "&startTime=" +
-		strconv.FormatInt(time.Now().Add(-time.Hour).Unix()*1000, 10) + "&endTime=" + strconv.FormatInt(time.Now().Add(10*time.Minute).Unix()*1000, 10)
+		strconv.FormatInt(time.Now().Add(-20*time.Minute).Unix()*1000, 10) + "&endTime=" + strconv.FormatInt(time.Now().Add(10*time.Minute).Unix()*1000, 10)
 	request, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	resp, err := client.Do(request)
 	if err != nil {
