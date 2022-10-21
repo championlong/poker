@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"poker/request"
 	"poker/utils"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -20,11 +21,13 @@ var roundNum int
 func main() {
 	for {
 		applyReport()
+		fmt.Println("========报名成功===========")
 
 		roundNum = getRoundNum()
+		fmt.Println(roundNum)
+
 		getRoundInfo()
 
-		fmt.Println(roundNum)
 		time.Sleep(28*time.Second)
 	}
 }
@@ -71,12 +74,12 @@ func getRoundInfo() {
 		return
 	}
 	proks := roundInfo.PerCardInfo[team]
-	prokStr := getRandPork(proks)
+	prokStr := getSortPorkV2(proks)
 	operate, err := request.CardOperate(context.Background(), roundNum, prokStr)
 	if err != nil {
 		fmt.Println("CardOperate", err)
 	}
-	fmt.Println("CardOperate result", operate)
+	fmt.Println("============CardOperate result", operate)
 }
 
 func getRandPork(porks []int) string {
@@ -86,4 +89,49 @@ func getRandPork(porks []int) string {
 		result[i] = strconv.Itoa(porks[v])
 	}
 	return strings.Join(result, ",")
+}
+
+func getSortPork(porks []int) string {
+	result := make([]string, 13)
+	sort.Ints(porks)
+	for i, v := range porks {
+		result[i] = strconv.Itoa(v)
+	}
+	return strings.Join(result, ",")
+}
+
+
+func getSortPorkV2(porks []int) string {
+	result := make([]string, 13)
+	sort.Ints(porks)
+	for i, v := range porks {
+		result[i] = strconv.Itoa(v)
+	}
+
+	return strings.Join(result[6:11], ",")+","+strings.Join(descSort(result[:6]),",")+","+result[11]+","+result[12]
+}
+
+
+func getSortDescPork(porks []int) string {
+	result := make([]string, 13)
+	sort.Sort(sort.Reverse(sort.IntSlice(porks)))
+	for i, v := range porks {
+		result[i] = strconv.Itoa(v)
+	}
+	return strings.Join(result, ",")
+}
+
+func descSort(tmp []string)  []string{
+
+	sort.Strings(tmp)
+
+	ret := make([]string,0)
+
+	for i:=len(tmp)-1;i>=0;i-- {
+		ret = append(ret, tmp[i])
+	}
+
+	return ret
+
+
 }
