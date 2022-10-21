@@ -82,7 +82,7 @@ func roundInfo(ctx context.Context, roundNum int) (model.RoundInfoResp, error) {
 	return roundResp, errors.New("err roundInfo")
 }
 
-// cardOperate 获取某场比赛信息接口
+// cardOperate 修改某场比赛出牌顺序
 func cardOperate(ctx context.Context, roundNum int, cardsInfo string) (string, error) {
 	url := urlDomain + "/card/operate?userToken=" + UserToken + "&roundNum=" +
 		strconv.Itoa(roundNum) + "&cardsInfo=" + cardsInfo
