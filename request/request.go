@@ -3,7 +3,6 @@ package request
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"net/http"
 	"poker/model"
@@ -31,14 +30,14 @@ func ApplyRouter(ctx context.Context) (string, error) {
 		respBody, _ := ioutil.ReadAll(resp.Body) //true/flase
 		return string(respBody), nil
 	}
-	return "", errors.New("err apply router")
+	return ApplyRouter(ctx)
 }
 
 // CardInfo 获取整体⽐赛信息接口
 func CardInfo(ctx context.Context) (model.CardInfoResp, error) {
 	cardInfoResp := model.CardInfoResp{}
 	url := urlDomain + "/card/info?userToken=" + UserToken + "&startTime=" +
-		strconv.FormatInt(time.Now().Add(-time.Hour).Unix() * 1000, 10) + "&endTime=" + strconv.FormatInt(time.Now().Unix() * 1000, 10)
+		strconv.FormatInt(time.Now().Add(-time.Hour).Unix()*1000, 10) + "&endTime=" + strconv.FormatInt(time.Now().Add(10*time.Minute).Unix()*1000, 10)
 	request, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	resp, err := client.Do(request)
 	if err != nil {
@@ -53,7 +52,7 @@ func CardInfo(ctx context.Context) (model.CardInfoResp, error) {
 		}
 		return cardInfoResp, nil
 	}
-	return cardInfoResp, errors.New("err cardInfo")
+	return CardInfo(ctx)
 }
 
 // RoundInfo 获取某场比赛信息接口
@@ -74,7 +73,7 @@ func RoundInfo(ctx context.Context, roundNum int) (model.RoundInfoResp, error) {
 		}
 		return roundResp, nil
 	}
-	return roundResp, errors.New("err roundInfo")
+	return RoundInfo(ctx, roundNum)
 }
 
 // CardOperate 修改某场比赛出牌顺序
@@ -91,5 +90,5 @@ func CardOperate(ctx context.Context, roundNum int, cardsInfo string) (string, e
 		respBody, _ := ioutil.ReadAll(resp.Body) //ture/false
 		return string(respBody), nil
 	}
-	return "", errors.New("err cardOperate")
+	return CardOperate(ctx, roundNum, cardsInfo)
 }
